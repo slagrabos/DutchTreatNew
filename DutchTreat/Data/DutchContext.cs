@@ -20,5 +20,10 @@ namespace DutchTreat.Data
             base.OnConfiguring(optionsBuilder);
             optionsBuilder.UseSqlServer(_config.GetConnectionString("DutchContextDb"));
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+        }
     }
 }
