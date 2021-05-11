@@ -2,25 +2,37 @@
 <html>
 <head>
     <title>Dutch Treat @ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link href="~/lib/fontawesome/css/all.min.css" rel="stylesheet" />
+
     <link href="~/css/site.css" rel="stylesheet" />
 </head>
 <body>
-<header>
-    <h1>Welcome to Dutch Treat</h1>
-    <menu>
-        <ul>
-            <li><a asp-controller="App" asp-action="Index">Home</a></li>
-            <li><a asp-controller="App" asp-action="Contact">Contact</a></li>
-            <li><a asp-controller="App" asp-action="About">About</a></li>
-        </ul>
-    </menu>
+<header class="container">
+    <nav class="navbar navbar-dark bg-dark navbar-expand-md">
+        <h1 class="navbar-brand"><i class="fas fa-paint-brush"></i> Welcome to Dutch Treat</h1>
+        <button class="navbar-toggler" data-toggle="collapse" data-target="#theMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="theMenu" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                <li class="item"><a class="nav-link" asp-controller="App" asp-action="Index">Home</a></li>
+                <li class="item"><a class="nav-link" asp-controller="App" asp-action="Contact">Contact</a></li>
+                <li class="item"><a class="nav-link" asp-controller="App" asp-action="About">About</a></li>
+            </ul>
+            </div>
+    </nav>
 </header>
-<section>
-    <h2>@ViewBag.Title</h2>
+<section class="container">
+    <h2 class="text-center">@ViewBag.Title</h2>
     @RenderBody()
 </section>
-<footer>Copyright 2017 Dutch Treat LLC</footer>
+<footer class="container">
+    <div class="text-center">Copyright 2017 Dutch Treat LLC</div>
+</footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
 <script src="~/js/index.js"></script>
+@RenderSection("Scripts", false)
 </body>
 </html>

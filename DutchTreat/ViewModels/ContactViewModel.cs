@@ -4,6 +4,7 @@ namespace DutchTreat.ViewModels
 {
     public class ContactViewModel
     {
+        
         [Required]
         public string Name { get; set; }
         [Required]
@@ -12,6 +13,7 @@ namespace DutchTreat.ViewModels
         [Required]
         public string Subject { get; set; }
         [Required]
+        [MaxLength(30, ErrorMessage = "Too long")]
         public string Message { get; set; }
         
     }
