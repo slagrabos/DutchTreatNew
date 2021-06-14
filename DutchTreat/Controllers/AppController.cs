@@ -5,6 +5,7 @@ using DutchTreat.Data;
 using DutchTreat.Data.Entities;
 using DutchTreat.Services;
 using DutchTreat.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DutchTreat.Controllers
@@ -12,16 +13,17 @@ namespace DutchTreat.Controllers
     public class AppController : Controller
     {
         private readonly IMailService _mailService;
-        private readonly DutchContext _context;
+        private readonly IDutchRepository _repository;
 
-        public AppController(IMailService mailService, DutchContext context)
+        public AppController(IMailService mailService, IDutchRepository repository)
         {
             _mailService = mailService;
-            _context = context;
+            _repository = repository;
         }
         [HttpGet("/")]
         public IActionResult Index()
         {
+            var results = _repository.GetAllProducts();
             ViewBag.Title = "Home Page";
             // throw new InvalidProgramException("Bad things happens to good developers");
             return View();
@@ -48,10 +50,11 @@ namespace DutchTreat.Controllers
         {
             return View();
         }
+        [Authorize]
         [HttpGet("shop")]
         public IActionResult Shop()
         {
-            var results = _context.Products.OrderBy(p => p.Category);
+            var results = _repository.GetAllProducts();
             
             return View(results);
         }

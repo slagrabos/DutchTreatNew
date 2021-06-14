@@ -4,40 +4,60 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using DutchTreat.Data.Entities;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
 
 namespace DutchTreat.Data
 {
-    public class DutchSeeder
+  public class DutchSeeder
+  {
+    private readonly DutchContext _ctx;
+    private readonly IWebHostEnvironment _env;
+    private readonly UserManager<StoreUser> _userManager;
+
+    public DutchSeeder(DutchContext ctx, IWebHostEnvironment env, UserManager<StoreUser> userManager)
     {
-        private readonly DutchContext _ctx;
-        private readonly IWebHostEnvironment _env;
+      _ctx = ctx;
+      _env = env;
+      _userManager = userManager;
+    }
 
-        public DutchSeeder(DutchContext ctx, IWebHostEnvironment env)
+    public async Task SeedAsync()
+    {
+      _ctx.Database.EnsureCreated();
+      StoreUser user = await _userManager.FindByEmailAsync("shawn@dutchtreat.com");
+      if (user == null)
+      {
+        user = new StoreUser()
         {
-            _ctx = ctx;
-            _env = env;
-        }
-
-        public void Seed()
+          FirstName = "Shawn",
+          LastName = "Wildermuth",
+          Email = "shawn@dutchtreat.com",
+          UserName = "shawn@dutchtreat.com"
+        };
+        var result = await _userManager.CreateAsync(user, "P@ssw0rd!");
+        if (result != IdentityResult.Success)
         {
-            _ctx.Database.EnsureCreated();
-            
-            if (!EnumerableExtensions.Any(_ctx.Products))
-            {
-                var filePath = Path.Combine(_env.ContentRootPath, "Data/art.json");
-                var json = File.ReadAllText(filePath);
-                var products = JsonSerializer.Deserialize<IEnumerable<Product>>(json);
+          throw new InvalidOperationException("could not create new user");
+                }
+      }
 
-                _ctx.Products.AddRange(products);
+      if (!_ctx.Products.Any())
+      {
+        var filePath = Path.Combine(_env.ContentRootPath, "Data/art.json");
+        var json = File.ReadAllText(filePath);
+        var products = JsonSerializer.Deserialize<IEnumerable<Product>>(json);
 
-                var order = new Order()
-                {
-                    OrderDate = DateTime.Today,
-                    OrderNumber = "1000",
-                    Items = new List<OrderItem>()
+        _ctx.Products.AddRange(products);
+
+        var order = new Order()
+        {
+          OrderDate = DateTime.Today,
+          OrderNumber = "1000",
+          Items = new List<OrderItem>()
                     {
                         new OrderItem()
                         {
@@ -46,11 +66,11 @@ namespace DutchTreat.Data
                             UnitPrice = products.First().Price
                         }
                     }
-                };
-                _ctx.Orders.Add(order);
-                _ctx.SaveChanges();
-                
-            }
-        }
+        };
+        _ctx.Orders.Add(order);
+        _ctx.SaveChanges();
+
+      }
     }
+  }
 }

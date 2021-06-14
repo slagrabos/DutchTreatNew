@@ -15,16 +15,31 @@ namespace DutchTreat
     {
         public static void Main(string[] args)
         {
+            
             var host = CreateHostBuilder(args).Build();
 
-            RunSeeding(host);
-            host.Run();
+            if (args.Length == 1 && args[0].ToLower() =="/seed")
+            {
+                RunSeeding(host);
+                
+            }
+            else
+            {
+                host.Run();
+                
+            }
         }
 
         private static void RunSeeding(IHost host)
         {
-            var seeder = host.Services.GetService<DutchSeeder>();
-            seeder.Seed();
+            
+            var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var seeder = scope.ServiceProvider.GetService<DutchSeeder>();
+                seeder.Seed();      
+            }
+          
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

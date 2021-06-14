@@ -1,10 +1,12 @@
-﻿using DutchTreat.Data.Entities;
+﻿using System;
+using DutchTreat.Data.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace DutchTreat.Data
 {
-    public class DutchContext : DbContext
+    public class DutchContext : IdentityDbContext<StoreUser>
     {
         private readonly IConfiguration _config;
 
@@ -24,6 +26,14 @@ namespace DutchTreat.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<Order>()
+                .HasData(new Order()
+                {
+                    Id = 1,
+                    OrderDate = DateTime.UtcNow,
+                    OrderNumber = "12345"
+                });
+            
         }
     }
 }
